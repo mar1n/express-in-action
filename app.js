@@ -1,10 +1,16 @@
 var express = require("express");
 var path = require("path");
-var apiRouter = require("./routes/api_router");
-
+var http = require("http");
 var app = express();
 
-var staticPath = path.resolve(__dirname, "static");
-app.use("/api", apiRouter);
+var publicPath = path.resolve(__dirname, "public");
+app.use(express.static(publicPath));
 
-app.listen(3000);
+var photoPath = path.resolve(__dirname, "offensive-photos-folder");
+app.use("/offensive", express.static(photoPath));
+
+app.use(function(request, response) {
+    response.writeHead(200, { "Content-Type": "text/plain"});
+    response.end("Looks like you didn't find a static file.");
+});
+http.createServer(app).listen(3000);
